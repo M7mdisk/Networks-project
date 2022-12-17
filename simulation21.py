@@ -21,7 +21,7 @@ rdt1_receiver = rdt_receiver(env)
 
 
 data_channel = channel(env=env, corrupt_p=0, lost_p=0, delay=3, name="DATA_channel")
-ack_channel = channel(env=env, corrupt_p=0.2, lost_p=0, delay=3, name="ACK_channel")
+ack_channel = channel(env=env, corrupt_p=0.5, lost_p=0, delay=3, name="ACK_channel")
 
 
 ##### __END__: SETTING PARAMETER #######

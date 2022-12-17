@@ -29,7 +29,7 @@ class rdt_sender(object):
     def __init__(self, env):
         # Timer stuff
         self.env = env
-        self.timeout_duration = 8
+        self.timeout_duration = 12
         self.timer_on = False
         self.timer = None
 
@@ -126,7 +126,7 @@ class rdt_receiver(object):
                 self.state = STATE_0
                 return True
             if pkt.corrupted or pkt.sequ_num == 0:
-                response = packet(seq_num=1, payload="ACK")
+                response = packet(seq_num=0, payload="ACK")
                 self.channel.udt_send(response)
             return True
         return False

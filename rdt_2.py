@@ -24,6 +24,8 @@ STATE_1 = 1  # sender waiting for ACK or NAK
 
 
 class rdt_sender(object):
+    send_time = 0
+
     def __init__(self, env):
         self.env = env
         self.channel = None
@@ -42,6 +44,8 @@ class rdt_sender(object):
             self.pkt = packet(seq_num=self.seq_num, payload=msg)
             self.seq_num += 1
             print("TIME: ", self.env.now, ": RDT_SENDER:  send pkt ", msg)
+            self.time_since_last_message = self.env.now
+            rdt_sender.send_time = self.env.now
 
             self.channel.udt_send(self.pkt)
             self.state = STATE_1  # switch to the second state, waiting for ACK
@@ -56,6 +60,7 @@ class rdt_sender(object):
         assert self.state == STATE_1
 
         if pkt.payload == "ACK":
+            print("RTT:", self.env.now - self.time_since_last_message)
             self.state = STATE_0
         elif pkt.payload == "NAK":
             self.channel.udt_send(self.pkt)  # re-send the last un-acknowledged packet
@@ -88,3 +93,4 @@ class rdt_receiver(object):
             response = packet(seq_num=0, payload="ACK")
             self.channel.udt_send(response)
             self.ReceiverAPP.deliver_data(pkt.payload)
+            print("E2E", self.env.now - rdt_sender.send_time)
